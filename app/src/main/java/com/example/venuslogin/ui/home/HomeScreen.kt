@@ -8,9 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -18,38 +19,24 @@ fun HomeScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = " Bienvenida a Venus",
-            fontSize = 28.sp,
-            color = Color(0xFFD81B60)
-        )
-
+        Text("Bienvenida a Venus", fontSize = 28.sp, color = Color(0xFFD81B60))
         Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            text = "Aquí podrás acceder a tus funciones de salud femenina.",
-            fontSize = 18.sp,
-            color = Color.DarkGray
-        )
-
+        Text("Aquí podrás acceder a tus funciones de salud femenina.", fontSize = 18.sp, color = Color.DarkGray)
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { /* Aquí podrías agregar navegación a otra pantalla */ },
+            onClick = { navController.navigate("profesionales") },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD81B60))
-        ) {
-            Text("Ver Perfil", color = Color.White)
-        }
+        ) { Text("Ver Profesionales", color = Color.White) }
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { /* Podría cerrar sesión o ir a otra sección */ },
+            onClick = { navController.navigate("historial") },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
-        ) {
-            Text("Cerrar Sesión", color = Color.White)
-        }
+        ) { Text("Ver Historial", color = Color.White) }
     }
 }
+

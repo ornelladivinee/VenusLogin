@@ -9,20 +9,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.venuslogin.ui.navigation.AppNavigation
 import com.example.venuslogin.ui.theme.VenusLoginTheme
+import com.example.venuslogin.ui.models.Profesional
+import com.example.venuslogin.ui.models.Reserva
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Datos de ejemplo
+        val profesionales = listOf(
+            Profesional(1, "Dra. López", "Ginecología", listOf("09:00", "10:00")),
+            Profesional(2, "Dra. Pérez", "Endocrinología", listOf("11:00", "12:00"))
+        )
+        val reservas = listOf<Reserva>()
+
         setContent {
             VenusLoginTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = Color.White //fondo blanco
+                    color = Color.White
                 ) {
-                    AppNavigation()
+                    AppNavigation(profesionales, reservas)
                 }
             }
         }
     }
 }
-
