@@ -23,6 +23,7 @@ import com.example.venuslogin.ui.theme.VenusLoginTheme
 @Composable
 fun RegisterScreen(navController: NavHostController) {
     var usuario by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var clave by remember { mutableStateOf("") }
     var confirmarClave by remember { mutableStateOf("") }
     var mensaje by remember { mutableStateOf("") }
@@ -65,6 +66,18 @@ fun RegisterScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(8.dp))
 
         TextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Correo electrónico", color = Color(0xFFD81B60), fontWeight = FontWeight.Bold) },
+            modifier = Modifier.fillMaxWidth(),
+            // Importante: Cambia el teclado para facilitar la escritura de email
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+
+        TextField(
             value = clave,
             onValueChange = { clave = it },
             label = { Text("Contraseña", color = Color(0xFFD81B60), fontWeight = FontWeight.Bold) },
@@ -89,8 +102,12 @@ fun RegisterScreen(navController: NavHostController) {
         // Botón de registro
         Button(
             onClick = {
-                if (usuario.isBlank() || clave.isBlank() || confirmarClave.isBlank()) {
+                if (usuario.isBlank() || email.isBlank() || clave.isBlank() || confirmarClave.isBlank()) {
                     mensaje = "Por favor, completa todos los campos."
+                } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    mensaje = "El formato del correo no es válido."
+                } else if (clave.length < 6) {
+                    mensaje = "La contraseña debe tener al menos 6 caracteres."
                 } else if (clave != confirmarClave) {
                     mensaje = "Las contraseñas no coinciden."
                 } else {
