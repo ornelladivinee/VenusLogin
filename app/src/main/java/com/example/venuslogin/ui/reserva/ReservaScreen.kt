@@ -1,46 +1,164 @@
 package com.example.venuslogin.ui.reserva
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.venuslogin.ui.models.Profesional
+import java.text.SimpleDateFormat
+import java.util.*
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.venuslogin.ui.theme.VenusLoginTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReservaScreen(
     profesional: Profesional,
-    onReservaConfirmada: () -> Unit
+    onReservaConfirmada: (fecha: String, hora: String) -> Unit
 ) {
-    var fecha by remember { mutableStateOf("") }
-    var hora by remember { mutableStateOf("") }
+// --- Estados para guardar las selecciones ---
+    var selectedDate by remember { mutableStateOf("") }
+    var selectedTime by remember { mutableStateOf("") }
+    var isTimeDropdownExpanded by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Reservar con ${profesional.nombre}", style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = fecha,
-            onValueChange = { fecha = it },
-            label = { Text("Fecha (dd/mm/yyyy)") },
-            modifier = Modifier.fillMaxWidth()
+    // --- Estados para controlar los diálogos ---
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    // Formateador para convertir la fecha del DatePicker (que es un Long) a un String
+    val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault(
+    ))
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Reservar con ${profesional.nombre}",
+            style = MaterialTheme.typography.headlineSmall
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = hora,
-            onValueChange = { hora = it },
-            label = { Text("Hora (HH:mm)") },
-            modifier = Modifier.fillMaxWidth()
+        Text(
+            text = profesional.especialidad,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary
         )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // --- 2. CAMPO DE FECHA (con DatePicker) ---
+        OutlinedTextField(
+            value = selectedDate,
+            onValueChange = { }, // No permitimos que se escriba manualmente
+            label = { Text("Fecha de la cita") },
+            placeholder = { Text("Selecciona una fecha") },
+            leadingIcon = { Icon(Icons.Default.DateRange, contentDescription = "Calendario") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { showDatePicker = true }, // Al hacer clic, abre el DatePicker
+            readOnly = true // El campo no se puede editar escribiendo
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
+
+        ExposedDropdownMenuBox(
+            expanded = isTimeDropdownExpanded,
+            onExpandedChange = { isTimeDropdownExpanded = !isTimeDropdownExpanded }
+        ) {
+            OutlinedTextField(
+                value = selectedTime,
+                onValueChange = {},
+                label = { Text("Hora disponible") },
+                placeholder = { Text("Selecciona una hora") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isTimeDropdownExpanded) },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(), // Ancla el menú al campo de texto
+                readOnly = true
+            )
+
+            // Contenido del menú desplegable
+            ExposedDropdownMenu(
+                expanded = isTimeDropdownExpanded,
+                onDismissRequest = { isTimeDropdownExpanded = false }
+            ) {
+                // Itera sobre las horas que pasaste en el objeto Profesional
+                profesional.horasDisponibles.forEach { hora ->
+                    DropdownMenuItem(
+                        text = { Text(hora) },
+                        onClick = {
+                            selectedTime = hora // Guarda la hora seleccionada
+                            isTimeDropdownExpanded = false // Cierra el menú
+                        }
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // --- BOTÓN DE CONFIRMAR ---
         Button(
             onClick = {
-                if (fecha.isNotEmpty() && hora.isNotEmpty()) {
-                    onReservaConfirmada()
-                }
+                // 4. PASA LOS DATOS HACIA ATRÁS
+                // Llama al callback con los datos seleccionados
+                onReservaConfirmada(selectedDate, selectedTime)
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            // El botón solo se activa si se seleccionó fecha Y hora
+            enabled = selectedDate.isNotEmpty() && selectedTime.isNotEmpty()
         ) {
             Text("Confirmar Reserva")
         }
+    }
+
+    if (showDatePicker) {
+        val datePickerState = rememberDatePickerState()
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        // Confirma la selección de fecha
+                        val millis = datePickerState.selectedDateMillis
+                        if (millis != null) {
+                            selectedDate = dateFormatter.format(Date(millis))
+                        }
+                        showDatePicker = false
+                    }
+                ) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text("Cancelar")
+                }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun ReservaScreenPreview() {
+
+    // 2. Crea un Profesional de ejemplo (dummy data)
+    val profesionalEjemplo = Profesional(
+        id = 1,
+        nombre = "Dra. Ana López",
+        especialidad = "Ginecología",
+        horasDisponibles = listOf("09:00", "10:00", "11:00")
+    )
+
+    VenusLoginTheme {
+        ReservaScreen(
+            profesional = profesionalEjemplo,
+            onReservaConfirmada = { _, _ -> } // Lambda vacía
+        )
     }
 }

@@ -20,12 +20,13 @@ fun HistorialScreen(reservas: List<Reserva>) {
                 elevation = CardDefaults.cardElevation(4.dp)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Profesional ID: ${reserva.profesionalId}", style = MaterialTheme.typography.bodyMedium)
-                    Text(text = "Fecha y Hora: ${reserva.fechaHora}", style = MaterialTheme.typography.bodySmall)
-                    Text(text = "Estado: ${reserva.estado}", style = MaterialTheme.typography.bodySmall)
+                    Text(text = "Profesional ID: ${reserva.id}", style = MaterialTheme.typography.titleMedium)
+                    Text(text = "Especialidad: ${reserva.especialidad}", style = MaterialTheme.typography.titleMedium)
+                    Text(text = "Fecha: ${reserva.fecha}", style = MaterialTheme.typography.bodyMedium)
+                    Text(text = "Hora: ${reserva.hora}", style = MaterialTheme.typography.bodyMedium)
+                    Text(text = "Estado: ${reserva.estado}", style = MaterialTheme.typography.bodyMedium)
                 }
             }
         }
     }
 }
-

@@ -29,7 +29,7 @@ fun ProfessionalsScreen(
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(text = prof.nombre, style = MaterialTheme.typography.titleMedium)
                     Text(text = prof.especialidad, style = MaterialTheme.typography.bodyMedium)
-                    Text(text = "Disponibilidad: ${prof.disponibilidad.joinToString()}", style = MaterialTheme.typography.bodySmall)
+                    Text(text = "Disponibilidad: ${prof.horasDisponibles.joinToString()}", style = MaterialTheme.typography.bodySmall)
                 }
             }
         }

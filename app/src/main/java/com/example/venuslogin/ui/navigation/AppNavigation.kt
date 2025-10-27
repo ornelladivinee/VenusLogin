@@ -18,7 +18,7 @@ import com.example.venuslogin.ui.models.Reserva
 @Composable
 fun AppNavigation(
     profesionales: List<Profesional>,
-    reservas: List<Reserva>
+    reservas: MutableList<Reserva>
 ) {
     val navController = rememberNavController()
 
@@ -39,10 +39,30 @@ fun AppNavigation(
         ) { backStackEntry ->
             val profId = backStackEntry.arguments?.getInt("profId") ?: 0
             val prof = profesionales.find { it.id == profId }!!
-            ReservaScreen(prof) { navController.popBackStack() }
+            ReservaScreen(
+                profesional = prof,
+                onReservaConfirmada = { fecha, hora ->
+                    // Cuando el usuario confirma, recibimos la fecha y la hora.
+                    val nuevaReserva = Reserva(
+                        id = (reservas.size + 1).toLong(), // ID simple, solo para ejemplo
+                        profesionalNombre = prof.nombre,
+                        especialidad = prof.especialidad,
+                        fecha = fecha,
+                        hora = hora,
+                        estado = "Confirmada" // Puedes añadir estados (confirmada, cancelada, etc.)
+                    )
+
+
+                    reservas.add(nuevaReserva)
+
+                    navController.popBackStack()
+                }
+            )
         }
 
-        composable("historial") { HistorialScreen(reservas = reservas) }
-
+        composable("historial") {
+            // HistorialScreen ahora recibirá la lista actualizada cada vez
+            HistorialScreen(reservas = reservas)
+        }
     }
 }
