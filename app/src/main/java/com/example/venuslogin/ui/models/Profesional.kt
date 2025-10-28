@@ -1,6 +1,5 @@
 package com.example.venuslogin.ui.models
 
-
 data class Profesional(
     val id: Int,
     val nombre: String,

@@ -25,8 +25,6 @@ fun ReservaScreen(
     var selectedDate by remember { mutableStateOf("") }
     var selectedTime by remember { mutableStateOf("") }
     var isTimeDropdownExpanded by remember { mutableStateOf(false) }
-
-    // --- Estados para controlar los diálogos ---
     var showDatePicker by remember { mutableStateOf(false) }
 
     // Formateador para convertir la fecha del DatePicker (que es un Long) a un String
@@ -49,18 +47,36 @@ fun ReservaScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // --- 2. CAMPO DE FECHA (con DatePicker) ---
-        OutlinedTextField(
-            value = selectedDate,
-            onValueChange = { }, // No permitimos que se escriba manualmente
-            label = { Text("Fecha de la cita") },
-            placeholder = { Text("Selecciona una fecha") },
-            leadingIcon = { Icon(Icons.Default.DateRange, contentDescription = "Calendario") },
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { showDatePicker = true }, // Al hacer clic, abre el DatePicker
-            readOnly = true // El campo no se puede editar escribiendo
-        )
+                .clickable(
+                    // 1. El clic se pone en el Box
+                    onClick = { showDatePicker = true }
+                )
+        ) {
+            OutlinedTextField(
+                value = selectedDate,
+                onValueChange = { },
+                label = { Text("Fecha de la cita") },
+                placeholder = { Text("Selecciona una fecha") },
+                leadingIcon = { Icon(Icons.Default.DateRange, contentDescription = "Calendario") },
+                modifier = Modifier.fillMaxWidth(),
+                readOnly = true,
+
+                // 2. Deshabilita el campo para que el Box reciba el clic
+                enabled = false,
+
+                // 3. Colores para que no se vea gris (deshabilitado)
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledTextColor = MaterialTheme.colorScheme.onSurface,
+                    disabledBorderColor = MaterialTheme.colorScheme.outline,
+                    disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            )
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -154,7 +170,6 @@ fun ReservaScreen(
 @Composable
 fun ReservaScreenPreview() {
 
-    // 2. Crea un Profesional de ejemplo (dummy data)
     val profesionalEjemplo = Profesional(
         id = 1,
         nombre = "Dra. Ana López",
