@@ -9,26 +9,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.venuslogin.R
+import com.example.venuslogin.ui.models.Usuario
 import com.example.venuslogin.ui.theme.VenusLoginTheme
 
-// --- Composable real ---
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginScreen(
+    navController: NavHostController,
+    usuarios: List<Usuario>
+) {
     var usuario by remember { mutableStateOf("") }
     var clave by remember { mutableStateOf("") }
     var mensaje by remember { mutableStateOf("") }
-
-    val usuarioValido = "venus"
-    val claveValida = "1234"
 
     Column(
         modifier = Modifier
@@ -40,80 +40,92 @@ fun LoginScreen(navController: NavHostController) {
         Image(
             painter = painterResource(id = R.drawable.venus_logo),
             contentDescription = "Logo Venus",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp),
+            modifier = Modifier.fillMaxWidth().height(250.dp),
             contentScale = ContentScale.Fit
         )
 
-        // Título
         Text(
             text = "Iniciar Sesión",
             color = Color(0xFFD81B60),
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold
         )
-
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Campos de texto
         TextField(
             value = usuario,
             onValueChange = { usuario = it },
-            label = { Text("Usuario", color = Color(0xFFD81B60), fontWeight = FontWeight.Bold) },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+            label = { Text("Usuario o Correo", color = Color(0xFFD81B60), fontWeight = FontWeight.Bold) }
         )
-
+        Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = clave,
             onValueChange = { clave = it },
             label = { Text("Contraseña", color = Color(0xFFD81B60), fontWeight = FontWeight.Bold) },
-            modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
-
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Botón Iniciar Sesión
+        // Mensaje de error
+        if (mensaje.isNotEmpty()) {
+            Text(
+                text = mensaje,
+                color = Color.Red,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
+
+        // Botón de Iniciar Sesión
         Button(
             onClick = {
-                if (usuario == usuarioValido && clave == claveValida) {
-                    navController.navigate("home")
+
+                val usuarioEncontrado = usuarios.find {
+                    (it.nombre == usuario || it.correo == usuario)
+                            // Y si la clave es IGUAL A LA CLAVE
+                            && it.clave == clave
+                }
+
+
+                if (usuarioEncontrado != null) {
+                    mensaje = ""
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
                 } else {
-                    mensaje = " Usuario o contraseña incorrectos"
+                    val listaDeNombres = usuarios.joinToString(", ") { it.nombre }
+
+                    mensaje = "Error. Lista: [$listaDeNombres]. Tú escribiste: [$usuario] y [$clave]"
                 }
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD81B60))
         ) {
-            Text("Iniciar Sesión", color = Color.White, fontWeight = FontWeight.Bold)
+            Text("Iniciar Sesión", color = Color.White)
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // Botón Registrarse
+        // Botón de Registrarse
         Button(
             onClick = { navController.navigate("register") },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
         ) {
-            Text("Registrarse", color = Color.White, fontWeight = FontWeight.Bold)
+            Text("Registrarse", color = Color.White)
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Mensaje de error
-        Text(text = mensaje, color = Color(0xFFD81B60), fontSize = 16.sp, fontWeight = FontWeight.Bold)
     }
 }
 
-// --- Función Preview ---
+// Preview
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
     VenusLoginTheme {
-        LoginScreen(navController = rememberNavController())
+        LoginScreen(
+            navController = rememberNavController(),
+            usuarios = emptyList()
+        )
     }
 }

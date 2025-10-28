@@ -14,17 +14,20 @@ import com.example.venuslogin.ui.reserva.ReservaScreen
 import com.example.venuslogin.ui.historial.HistorialScreen
 import com.example.venuslogin.ui.models.Profesional
 import com.example.venuslogin.ui.models.Reserva
+import com.example.venuslogin.ui.models.Usuario
+
 
 @Composable
 fun AppNavigation(
     profesionales: List<Profesional>,
-    reservas: MutableList<Reserva>
+    reservas: MutableList<Reserva>,
+    usuarios: MutableList<Usuario>
 ) {
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = "register") {
-        composable("login") { LoginScreen(navController) }
-        composable("register") { RegisterScreen(navController) }
+    NavHost(navController = navController, startDestination = "login") {
+        composable("login") { LoginScreen(navController, usuarios) }
+        composable("register") { RegisterScreen(navController, usuarios) }
         composable("home") { HomeScreen(navController) }
 
         composable("profesionales") {

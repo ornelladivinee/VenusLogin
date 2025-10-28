@@ -19,9 +19,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.venuslogin.R
 import com.example.venuslogin.ui.theme.VenusLoginTheme
+import com.example.venuslogin.ui.models.Usuario
+
 
 @Composable
-fun RegisterScreen(navController: NavHostController) {
+fun RegisterScreen(navController: NavHostController, usuarios: MutableList<Usuario>) {
     var usuario by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var clave by remember { mutableStateOf("") }
@@ -143,7 +145,7 @@ fun RegisterScreen(navController: NavHostController) {
 @Composable
 fun RegisterScreenPreview() {
     VenusLoginTheme {
-        RegisterScreen(navController = rememberNavController())
+        RegisterScreen(navController = rememberNavController(), usuarios = mutableListOf())
     }
 }
 

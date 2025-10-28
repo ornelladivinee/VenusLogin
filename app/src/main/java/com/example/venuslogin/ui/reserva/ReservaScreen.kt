@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.venuslogin.ui.theme.VenusLoginTheme
+import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,13 +104,19 @@ fun ReservaScreen(
         // --- BOTÓN DE CONFIRMAR ---
         Button(
             onClick = {
-                // 4. PASA LOS DATOS HACIA ATRÁS
-                // Llama al callback con los datos seleccionados
+
                 onReservaConfirmada(selectedDate, selectedTime)
             },
             modifier = Modifier.fillMaxWidth(),
             // El botón solo se activa si se seleccionó fecha Y hora
-            enabled = selectedDate.isNotEmpty() && selectedTime.isNotEmpty()
+            enabled = selectedDate.isNotEmpty() && selectedTime.isNotEmpty(),
+
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFD81B60),
+                contentColor = Color.White
+            )
+
+
         ) {
             Text("Confirmar Reserva")
         }
