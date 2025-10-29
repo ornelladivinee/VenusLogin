@@ -64,10 +64,10 @@ fun ReservaScreen(
                 modifier = Modifier.fillMaxWidth(),
                 readOnly = true,
 
-                // 2. Deshabilita el campo para que el Box reciba el clic
+                // Deshabilita el campo para que el Box reciba el clic
                 enabled = false,
 
-                // 3. Colores para que no se vea gris (deshabilitado)
+                // Colores para que no se vea gris (deshabilitado)
                 colors = OutlinedTextFieldDefaults.colors(
                     disabledTextColor = MaterialTheme.colorScheme.onSurface,
                     disabledBorderColor = MaterialTheme.colorScheme.outline,
