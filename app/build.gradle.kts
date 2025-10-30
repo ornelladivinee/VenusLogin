@@ -40,7 +40,8 @@ android {
 }
 
 dependencies {
-    implementation("com.airbnb.android:lottie-compose:6.4.0")
+    implementation("com.airbnb.android:lottie-compose:6.7.0")
+
     implementation("androidx.compose.material:material-icons-extended-android:1.6.8")
 
     implementation("androidx.navigation:navigation-compose:2.7.3")
