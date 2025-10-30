@@ -22,6 +22,7 @@ import com.example.venuslogin.ui.models.Reserva
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.venuslogin.ui.theme.VenusLoginTheme
+import androidx.compose.foundation.background
 
 @Composable
 fun HistorialScreen(
@@ -46,7 +47,7 @@ fun HistorialScreen(
         }
 
         items(reservas) { reserva ->
-            val profesional = profesionales.find { it.id == reserva.profesionalId}
+            val profesional = profesionales.find { it.id.toLong() == reserva.id}
             val nombreProfesional = profesional?.nombre ?: "Profesional Desconocido"
             val especialidadProfesional = profesional?.especialidad ?: "Especialidad no definida"
 
@@ -74,7 +75,7 @@ fun HistorialScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = "Fecha: ${reserva.fechaHora}",
+                        text = "Fecha: ${reserva.fecha}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Black
                     )
@@ -98,9 +99,9 @@ fun HistorialScreenPreview() {
             Profesional(2, "Dr. Javier Ruiz", "Dermatología", listOf("14:00", "15:00"))
         )
         val reservasPreview = listOf(
-            Reserva(101, "Dra. Lopez", "Ginecología", "01/11/2023 09:00", 2),
-            Reserva(102, "Dra. Perez", "Endocrinología", "02/11/2023 14:00", "Cancelada"),
-            Reserva(103, "Dra. Mesina", "Cardiología", "03/11/2023 10:00", "Confirmada")
+            Reserva(101, "Dra. Lopez", "Ginecología", "01/11/2023", "09:00","Confirmada"),
+            Reserva(102, "Dra. Perez", "Endocrinología", "02/11/2023", "14:00","Cancelada"),
+            Reserva(103, "Dra. Mesina", "Cardiología", "03/11/2023", "10:00","Confirmada")
         )
         HistorialScreen(reservas = reservasPreview, profesionales = profesionalesPreview)
     }
