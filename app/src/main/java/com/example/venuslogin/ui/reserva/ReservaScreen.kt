@@ -98,8 +98,10 @@ fun ReservaScreen(
                 readOnly = true,
 
                 colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    focusedIndicatorColor = venusPink,
                     focusedLabelColor = venusPink,
                     focusedTrailingIconColor = venusPink,
+                    unfocusedIndicatorColor = venusPink,
                     unfocusedLabelColor = venusPink,
                     unfocusedTrailingIconColor = venusPink
                 )
