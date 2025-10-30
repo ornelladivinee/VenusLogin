@@ -65,7 +65,7 @@ fun AppNavigation(
 
         composable("historial") {
             // HistorialScreen ahora recibirá la lista actualizada cada vez
-            HistorialScreen(reservas = reservas)
+            HistorialScreen(reservas = reservas, profesionales = profesionales)
         }
     }
 }

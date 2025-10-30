@@ -41,7 +41,7 @@ fun HistorialScreen(
             Text(
                 text = "Tu Historial de Citas",
                 style = MaterialTheme.typography.headlineMedium,
-                color = venusPink, // --- CAMBIO 2: Título en rosa ---
+                color = venusPink,
                 modifier = Modifier.padding(bottom = 24.dp, start = 8.dp)
             )
         }

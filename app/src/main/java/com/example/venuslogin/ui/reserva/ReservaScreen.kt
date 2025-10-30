@@ -1,5 +1,6 @@
 package com.example.venuslogin.ui.reserva
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -7,13 +8,13 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.venuslogin.ui.models.Profesional
+import com.example.venuslogin.ui.theme.VenusLoginTheme
 import java.text.SimpleDateFormat
 import java.util.*
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.venuslogin.ui.theme.VenusLoginTheme
-import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -21,39 +22,42 @@ fun ReservaScreen(
     profesional: Profesional,
     onReservaConfirmada: (fecha: String, hora: String) -> Unit
 ) {
-// --- Estados para guardar las selecciones ---
+    val venusPink = Color(0xFFD81B60)
+    val lightPinkBg = Color(0xFFFCE4EC)
+
+    // --- Estados para guardar las selecciones ---
     var selectedDate by remember { mutableStateOf("") }
     var selectedTime by remember { mutableStateOf("") }
     var isTimeDropdownExpanded by remember { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
 
-    // Formateador para convertir la fecha del DatePicker (que es un Long) a un String
-    val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault(
-    ))
+    val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(lightPinkBg) // <-- CAMBIO: Fondo rosa claro
             .padding(16.dp)
     ) {
+        // --- 2. Títulos en rosa ---
         Text(
             text = "Reservar con ${profesional.nombre}",
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.headlineSmall,
+            color = venusPink // <-- CAMBIO: Color de título
         )
         Text(
             text = profesional.especialidad,
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = venusPink.copy(alpha = 0.7f)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // --- 3. Campo de Fecha (estilo rosa) ---
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(
-                    // 1. El clic se pone en el Box
-                    onClick = { showDatePicker = true }
-                )
+                .clickable(onClick = { showDatePicker = true })
         ) {
             OutlinedTextField(
                 value = selectedDate,
@@ -63,22 +67,20 @@ fun ReservaScreen(
                 leadingIcon = { Icon(Icons.Default.DateRange, contentDescription = "Calendario") },
                 modifier = Modifier.fillMaxWidth(),
                 readOnly = true,
-
-                // Deshabilita el campo para que el Box reciba el clic
                 enabled = false,
 
-                // Colores para que no se vea gris (deshabilitado)
                 colors = OutlinedTextFieldDefaults.colors(
                     disabledTextColor = MaterialTheme.colorScheme.onSurface,
-                    disabledBorderColor = MaterialTheme.colorScheme.outline,
+                    disabledBorderColor = venusPink.copy(alpha = 0.5f), // Borde rosa
                     disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    disabledLabelColor = venusPink, // Etiqueta rosa
+                    disabledLeadingIconColor = venusPink // Icono rosa
                 )
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
 
         ExposedDropdownMenuBox(
             expanded = isTimeDropdownExpanded,
@@ -90,11 +92,17 @@ fun ReservaScreen(
                 label = { Text("Hora disponible") },
                 placeholder = { Text("Selecciona una hora") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isTimeDropdownExpanded) },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .menuAnchor(), // Ancla el menú al campo de texto
-                readOnly = true
+                    .menuAnchor(),
+                readOnly = true,
+
+                colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    focusedLabelColor = venusPink,
+                    focusedTrailingIconColor = venusPink,
+                    unfocusedLabelColor = venusPink,
+                    unfocusedTrailingIconColor = venusPink
+                )
             )
 
             // Contenido del menú desplegable
@@ -102,13 +110,12 @@ fun ReservaScreen(
                 expanded = isTimeDropdownExpanded,
                 onDismissRequest = { isTimeDropdownExpanded = false }
             ) {
-                // Itera sobre las horas que pasaste en el objeto Profesional
                 profesional.horasDisponibles.forEach { hora ->
                     DropdownMenuItem(
                         text = { Text(hora) },
                         onClick = {
-                            selectedTime = hora // Guarda la hora seleccionada
-                            isTimeDropdownExpanded = false // Cierra el menú
+                            selectedTime = hora
+                            isTimeDropdownExpanded = false
                         }
                     )
                 }
@@ -117,26 +124,22 @@ fun ReservaScreen(
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // --- BOTÓN DE CONFIRMAR ---
+
         Button(
             onClick = {
-
                 onReservaConfirmada(selectedDate, selectedTime)
             },
             modifier = Modifier.fillMaxWidth(),
-            // El botón solo se activa si se seleccionó fecha Y hora
             enabled = selectedDate.isNotEmpty() && selectedTime.isNotEmpty(),
-
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFD81B60),
+                containerColor = venusPink,
                 contentColor = Color.White
             )
-
-
         ) {
             Text("Confirmar Reserva")
         }
     }
+
 
     if (showDatePicker) {
         val datePickerState = rememberDatePickerState()
@@ -145,27 +148,44 @@ fun ReservaScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        // Confirma la selección de fecha
                         val millis = datePickerState.selectedDateMillis
                         if (millis != null) {
                             selectedDate = dateFormatter.format(Date(millis))
                         }
                         showDatePicker = false
-                    }
+                    },
+                    colors = ButtonDefaults.textButtonColors(contentColor = venusPink)
                 ) {
                     Text("OK")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) {
+                TextButton(
+                    onClick = { showDatePicker = false },
+                    colors = ButtonDefaults.textButtonColors(contentColor = venusPink.copy(alpha = 0.7f))
+                ) {
                     Text("Cancelar")
                 }
             }
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(
+                state = datePickerState,
+
+                colors = DatePickerDefaults.colors(
+                    containerColor = lightPinkBg.copy(alpha = 1.0f),
+                    titleContentColor = venusPink,
+                    headlineContentColor = venusPink,
+                    weekdayContentColor = venusPink,
+                    selectedDayContainerColor = venusPink,
+                    selectedDayContentColor = Color.White,
+                    todayDateBorderColor = venusPink,
+                    todayContentColor = venusPink
+                )
+            )
         }
     }
-}
+} // --- Fin de la función ReservaScreen ---
+
 @Preview(showBackground = true)
 @Composable
 fun ReservaScreenPreview() {
@@ -180,7 +200,7 @@ fun ReservaScreenPreview() {
     VenusLoginTheme {
         ReservaScreen(
             profesional = profesionalEjemplo,
-            onReservaConfirmada = { _, _ -> } // Lambda vacía
+            onReservaConfirmada = { _, _ -> }
         )
     }
 }
