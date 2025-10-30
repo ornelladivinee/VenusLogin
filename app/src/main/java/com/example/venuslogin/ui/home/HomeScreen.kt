@@ -21,7 +21,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.example.venuslogin.R // Asegúrate de que tu R (recursos) esté importado
+import com.example.venuslogin.R
 import com.example.venuslogin.ui.theme.VenusLoginTheme
 
 @Composable
