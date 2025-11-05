@@ -20,15 +20,16 @@ import androidx.navigation.compose.rememberNavController
 import com.example.venuslogin.R
 import com.example.venuslogin.ui.models.Usuario
 import com.example.venuslogin.ui.theme.VenusLoginTheme
+import com.example.venuslogin.viewmodel.MainViewModel
 
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    usuarios: List<Usuario>
+    usuarios: List<Usuario>,
+    mainViewModel: MainViewModel
 ) {
     var usuario by remember { mutableStateOf("") }
     var clave by remember { mutableStateOf("") }
-    var mensaje by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -40,7 +41,9 @@ fun LoginScreen(
         Image(
             painter = painterResource(id = R.drawable.venus_logo),
             contentDescription = "Logo Venus",
-            modifier = Modifier.fillMaxWidth().height(250.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp),
             contentScale = ContentScale.Fit
         )
 
@@ -68,9 +71,9 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         // Mensaje de error
-        if (mensaje.isNotEmpty()) {
+        if (mainViewModel.mensaje.isNotEmpty()) {
             Text(
-                text = mensaje,
+                text = mainViewModel.mensaje,
                 color = Color.Red,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -80,23 +83,11 @@ fun LoginScreen(
         // Botón de Iniciar Sesión
         Button(
             onClick = {
-
-                val usuarioEncontrado = usuarios.find {
-                    (it.nombre == usuario || it.correo == usuario)
-                            // Y si la clave es IGUAL A LA CLAVE
-                            && it.clave == clave
-                }
-
-
-                if (usuarioEncontrado != null) {
-                    mensaje = ""
+                mainViewModel.login(usuario, clave, usuarios)
+                if (mainViewModel.isLoggedIn) {
                     navController.navigate("home") {
                         popUpTo("login") { inclusive = true }
                     }
-                } else {
-                    val listaDeNombres = usuarios.joinToString(", ") { it.nombre }
-
-                    mensaje = "Error. Lista: [$listaDeNombres]. Tú escribiste: [$usuario] y [$clave]"
                 }
             },
             modifier = Modifier.fillMaxWidth(),
@@ -118,14 +109,15 @@ fun LoginScreen(
     }
 }
 
-// Preview
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview() {
+    val dummyViewModel = MainViewModel() // para evitar error en Preview
     VenusLoginTheme {
         LoginScreen(
             navController = rememberNavController(),
-            usuarios = emptyList()
+            usuarios = emptyList(),
+            mainViewModel = dummyViewModel
         )
     }
 }

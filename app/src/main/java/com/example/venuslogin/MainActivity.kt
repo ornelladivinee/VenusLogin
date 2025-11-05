@@ -14,10 +14,15 @@ import com.example.venuslogin.ui.models.Reserva
 import com.example.venuslogin.ui.models.Usuario
 import com.example.venuslogin.ui.navigation.AppNavigation
 import com.example.venuslogin.ui.theme.VenusLoginTheme
+import androidx.activity.viewModels
+import com.example.venuslogin.viewmodel.MainViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val mainViewModel: MainViewModel by viewModels()
+
 
         val profesionales = listOf(
             Profesional(1, "Dra. López", "Ginecología", listOf("09:00", "10:00")),
@@ -43,7 +48,8 @@ class MainActivity : ComponentActivity() {
                     AppNavigation(
                         profesionales = profesionales,
                         reservas = reservas,
-                        usuarios = usuarios
+                        usuarios = usuarios,
+                        mainViewModel = mainViewModel
                     )
                 }
             }

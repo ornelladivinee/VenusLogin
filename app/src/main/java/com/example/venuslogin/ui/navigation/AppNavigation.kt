@@ -21,12 +21,13 @@ import com.example.venuslogin.ui.models.Usuario
 fun AppNavigation(
     profesionales: List<Profesional>,
     reservas: MutableList<Reserva>,
-    usuarios: MutableList<Usuario>
+    usuarios: MutableList<Usuario>,
+    mainViewModel: MainViewModel
 ) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "login") {
-        composable("login") { LoginScreen(navController, usuarios) }
+        composable("login") { LoginScreen(navController = navController, usuarios = usuarios, mainViewModel = mainViewModel) }
         composable("register") { RegisterScreen(navController, usuarios) }
         composable("home") { HomeScreen(navController) }
 
