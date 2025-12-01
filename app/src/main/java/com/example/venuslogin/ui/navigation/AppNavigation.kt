@@ -49,12 +49,12 @@ fun AppNavigation(
                 onReservaConfirmada = { fecha, hora ->
                     // Cuando el usuario confirma, recibimos la fecha y la hora.
                     val nuevaReserva = Reserva(
-                        id = (reservas.size + 1).toLong(), // ID simple, solo para ejemplo
+                        id = (reservas.size + 1).toLong(), // ID simple
                         profesionalNombre = prof.nombre,
                         especialidad = prof.especialidad,
                         fecha = fecha,
                         hora = hora,
-                        estado = "Confirmada" // Puedes añadir estados (confirmada, cancelada, etc.)
+                        estado = "Confirmada" // añadir estados (confirmada, cancelada, etc.)
                     )
 
 
@@ -66,7 +66,7 @@ fun AppNavigation(
         }
 
         composable("historial") {
-            // HistorialScreen ahora recibirá la lista actualizada cada vez
+            // lista actualizada cada vez
             HistorialScreen(reservas = reservas, profesionales = profesionales)
         }
     }
