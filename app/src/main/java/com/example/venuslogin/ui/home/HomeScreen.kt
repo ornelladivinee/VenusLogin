@@ -6,8 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.MedicalServices
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.* // Importante para remember, mutableStateOf, LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,13 +21,38 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.venuslogin.R
+import com.example.venuslogin.network.RetrofitClient
 import com.example.venuslogin.ui.theme.VenusLoginTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
 
     val venusPink = Color(0xFFD81B60)
     val lightPinkBg = Color(0xFFFCE4EC)
+
+    // ESTADO PARA LA CITA
+    var fraseDelDia by remember { mutableStateOf("Cargando inspiración...") }
+    var autorDelDia by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope() //la petición en segundo plano
+
+    // PEDIR LA CITA AL INICIAR :p
+    LaunchedEffect(Unit) {
+        scope.launch {
+            try {
+                // llamamos la API
+                val respuesta = RetrofitClient.servicio.obtenerCitaDelDia()
+                if (respuesta.isNotEmpty()) {
+                    fraseDelDia = respuesta[0].frase
+                    autorDelDia = respuesta[0].autor
+                }
+            } catch (e: Exception) {
+                // por sii falla
+                fraseDelDia = "Hoy es un gran día para cuidar de ti."
+                autorDelDia = "Venus"
+            }
+        }
+    }
 
     val composition by rememberLottieComposition(
         spec = LottieCompositionSpec.RawRes(R.raw.flores)
@@ -51,6 +75,38 @@ fun HomeScreen(navController: NavHostController) {
                 iterations = LottieConstants.IterateForever,
                 modifier = Modifier.size(150.dp)
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // TARJETA DE CITA
+            Card(
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(4.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "✨ Frase del día",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = venusPink
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "\"$fraseDelDia\"",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontStyle = FontStyle.Italic,
+                        color = Color.DarkGray
+                    )
+                    if (autorDelDia.isNotEmpty()) {
+                        Text(
+                            text = "- $autorDelDia",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.align(Alignment.End),
+                            color = Color.Gray
+                        )
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -101,7 +157,6 @@ fun HomeScreen(navController: NavHostController) {
         )
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
