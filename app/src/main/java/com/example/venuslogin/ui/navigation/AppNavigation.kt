@@ -32,10 +32,11 @@ fun AppNavigation(
         composable("register") { RegisterScreen(navController, usuarios) }
         composable("home") { HomeScreen(navController) }
 
-        composable("profesionales") {
-            ProfessionalsScreen(profesionales) { prof ->
-                navController.navigate("reserva/${prof.id}")
-            }
+        composable("profesionales") { navBackStackEntry ->
+            ProfessionalsScreen(
+                navController = navController,
+                profesionales = profesionales,
+            )
         }
 
         composable(
@@ -44,7 +45,9 @@ fun AppNavigation(
         ) { backStackEntry ->
             val profId = backStackEntry.arguments?.getInt("profId") ?: 0
             val prof = profesionales.find { it.id == profId }!!
+
             ReservaScreen(
+                navController = navController, // <-- agregado para la flecha de retroceso
                 profesional = prof,
                 onReservaConfirmada = { fecha, hora ->
                     // Cuando el usuario confirma, recibimos la fecha y la hora.
@@ -57,7 +60,6 @@ fun AppNavigation(
                         estado = "Confirmada" // añadir estados (confirmada, cancelada, etc.)
                     )
 
-
                     reservas.add(nuevaReserva)
 
                     navController.popBackStack()
@@ -65,9 +67,10 @@ fun AppNavigation(
             )
         }
 
+
         composable("historial") {
             // lista actualizada cada vez
-            HistorialScreen(reservas = reservas, profesionales = profesionales)
+            HistorialScreen(navController = navController, reservas = reservas, profesionales = profesionales)
         }
     }
 }

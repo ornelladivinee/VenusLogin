@@ -146,7 +146,20 @@ fun HomeScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Ver Historial", color = Color.White)
             }
-        }
+            Spacer(modifier = Modifier.height(16.dp))
+
+                ElevatedButton(
+                    onClick = {
+                        navController.navigate("login") {
+                            popUpTo("home") { inclusive = true } // Limpia la pila
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.elevatedButtonColors(containerColor = Color.White)
+                ) {
+                    Text("Cerrar sesión", color = venusPink)
+                }
+            }
 
         Text(
             text = "¡Venus seguirá mejorando para ti!",
