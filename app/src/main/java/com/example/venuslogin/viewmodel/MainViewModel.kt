@@ -14,6 +14,8 @@ class MainViewModel : ViewModel() {
     var isLoggedIn by mutableStateOf(false)
         private set
 
+
+
     // Validar login
     fun login(usuarioIngresado: String, clave: String, usuarios: List<Usuario>) {
         val usuarioEncontrado = usuarios.find {
