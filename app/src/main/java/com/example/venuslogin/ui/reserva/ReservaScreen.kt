@@ -176,19 +176,32 @@ fun ReservaScreen(
                     ) { Text("Cancelar") }
                 }
             ) {
-                DatePicker(
+                DatePicker(//SE CAMBIÓ POR LOS COLORES DEL CELULAR
                     state = datePickerState,
                     colors = DatePickerDefaults.colors(
-                        containerColor = lightPinkBg.copy(alpha = 1.0f),
+                        containerColor = lightPinkBg,
+
+                        // Título y cabecera
                         titleContentColor = venusPink,
                         headlineContentColor = venusPink,
+
+                        // DÍAS DE LA SEMANA (L M M J V)
                         weekdayContentColor = venusPink,
+
+                        //  NÚMEROS DEL CALENDARIO
+                        dayContentColor = Color.Black,                // días normales
+                        disabledDayContentColor = Color.DarkGray,     // días no seleccionables
+
+                        // Día seleccionado
                         selectedDayContainerColor = venusPink,
                         selectedDayContentColor = Color.White,
+
+                        // Hoy
                         todayDateBorderColor = venusPink,
-                        todayContentColor = venusPink
+                        todayContentColor = Color.Black               // HOY en negro
                     )
                 )
+
             }
         }
     }

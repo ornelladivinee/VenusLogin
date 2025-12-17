@@ -22,6 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -97,11 +100,30 @@ fun HistorialScreen(
 
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        // --- Botón para borrar la reserva ---
+                        // --- Botón para borrar la reserva, se agrego vibracion ---
                         Button(
                             onClick = {
-                                reservasState.remove(reserva) // elimina y Compose actualiza la UI automáticamente
-                                Toast.makeText(context, "Cita borrada con éxito", Toast.LENGTH_SHORT).show()
+
+                                val vibrator = context.getSystemService(Vibrator::class.java)
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    val effect = VibrationEffect.createOneShot(
+                                        300,
+                                        255 // vibración máxima
+                                    )
+                                    vibrator.vibrate(effect)
+                                } else {
+                                    vibrator.vibrate(300)
+                                }
+
+                                // Eliminar cita
+                                reservasState.remove(reserva)
+
+                                Toast.makeText(
+                                    context,
+                                    "Cita borrada con éxito",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = venusPink,
@@ -111,6 +133,7 @@ fun HistorialScreen(
                         ) {
                             Text("Borrar Cita")
                         }
+
                     }
                 }
             }
