@@ -7,8 +7,7 @@ Venus es una aplicación móvil enfocada en la gestión y apoyo de la salud feme
 ## Integrantes del equipo
 
 - Ornella Mesina  
-- [Nombre Integrante 2]  
-- [Nombre Integrante 3]  
+- Katherine Jimenez
 
 ---
 
