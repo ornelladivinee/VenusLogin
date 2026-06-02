@@ -60,7 +60,7 @@ fun HistorialScreen(
                 .padding(paddingValues)
                 .padding(top = 16.dp, start = 8.dp, end = 8.dp, bottom = 16.dp)
         ) {
-            items(reservasState, key = { it.id }) { reserva -> // <-- clave para optimización
+            items(reservasState, key = { it.id }) { reserva -> //  optimización
                 val profesional = profesionales.find { it.id.toLong() == reserva.id }
                 val nombreProfesional = profesional?.nombre ?: "Profesional Desconocido"
                 val especialidadProfesional = profesional?.especialidad ?: "Especialidad no definida"

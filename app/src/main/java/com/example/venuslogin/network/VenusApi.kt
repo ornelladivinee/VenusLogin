@@ -10,7 +10,7 @@ interface VenusApiService {
     suspend fun obtenerCitaDelDia(): List<Cita> // La API devuelve una lista
 }
 
-// 2. El Objeto Cliente (El Mesero): Configura la conexión
+
 object RetrofitClient {
     private const val BASE_URL = "https://zenquotes.io/api/"
 

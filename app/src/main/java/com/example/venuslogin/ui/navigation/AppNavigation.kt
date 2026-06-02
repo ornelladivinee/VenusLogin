@@ -16,6 +16,7 @@ import com.example.venuslogin.ui.models.Profesional
 import com.example.venuslogin.ui.models.Reserva
 import com.example.venuslogin.ui.models.Usuario
 import com.example.venuslogin.viewmodel.MainViewModel
+import com.example.venuslogin.ui.calendar.MenstrualCalendarScreen
 
 
 @Composable
@@ -72,5 +73,10 @@ fun AppNavigation(
             // lista actualizada cada vez
             HistorialScreen(navController = navController, reservas = reservas, profesionales = profesionales)
         }
+
+        composable("calendario") {
+            MenstrualCalendarScreen()
+        }
     }
+
 }
