@@ -36,7 +36,7 @@ fun HomeScreen(navController: NavHostController) {
     var autorDelDia by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope() //la petición en segundo plano
 
-    // PEDIR LA CITA AL INICIAR :p
+    // PEDIR LA CITA AL INICIAR
     LaunchedEffect(Unit) {
         scope.launch {
             try {
@@ -146,9 +146,23 @@ fun HomeScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Ver Historial", color = Color.White)
             }
+
+            // CALENDARIO MENSTRUAL
+
             Spacer(modifier = Modifier.height(16.dp))
 
-                ElevatedButton(
+            ElevatedButton(
+                onClick = {
+                    navController.navigate("calendario")
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.elevatedButtonColors(containerColor = venusPink)
+            ) {
+                Text("🌸 Calendario Menstrual", color = Color.White)
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+                ElevatedButton( // cerrar sesion
                     onClick = {
                         navController.navigate("login") {
                             popUpTo("home") { inclusive = true } // Limpia la pila
