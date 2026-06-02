@@ -1,16 +1,7 @@
 package com.example.venuslogin.ui.calendar
 
-import com.example.venuslogin.ui.models.*
-import com.example.venuslogin.ui.models.CycleDay
-import com.example.venuslogin.ui.calendar.DayType
 import com.example.venuslogin.ui.models.CycleData
-
-enum class DayType {
-    PERIOD,
-    FERTILE,
-    OVULATION,
-    NORMAL
-}
+import com.example.venuslogin.ui.calendar.DayType
 
 data class CycleDay(
     val day: Int,
@@ -21,22 +12,22 @@ fun generateCycle(data: CycleData): List<CycleDay> {
 
     val days = mutableListOf<CycleDay>()
 
-    val periodStart = data.lastPeriodDate
-    val periodEnd = periodStart + data.periodLength - 1
+    val cycleLength = data.cycleLength.coerceAtLeast(1)
+    val periodLength = data.periodLength.coerceAtLeast(1)
 
-    val ovulationDay = data.cycleLength / 2
-    val fertileStart = ovulationDay - 3
-    val fertileEnd = ovulationDay + 2
+    val periodStart = data.lastPeriodDate.coerceIn(1, cycleLength)
+    val periodEnd = (periodStart + periodLength - 1).coerceAtMost(cycleLength)
 
-    for (i in 1..data.cycleLength) {
+    val ovulationDay = (cycleLength / 2).coerceAtLeast(1)
+    val fertileStart = (ovulationDay - 3).coerceAtLeast(1)
+    val fertileEnd = (ovulationDay + 2).coerceAtMost(cycleLength)
+
+    for (i in 1..cycleLength) {
 
         val type = when {
             i in periodStart..periodEnd -> DayType.PERIOD
-
             i == ovulationDay -> DayType.OVULATION
-
             i in fertileStart..fertileEnd -> DayType.FERTILE
-
             else -> DayType.NORMAL
         }
 

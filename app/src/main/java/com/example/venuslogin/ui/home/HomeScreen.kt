@@ -24,7 +24,8 @@ import com.example.venuslogin.R
 import com.example.venuslogin.network.RetrofitClient
 import com.example.venuslogin.ui.theme.VenusLoginTheme
 import kotlinx.coroutines.launch
-
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 @Composable
 fun HomeScreen(navController: NavHostController) {
 
@@ -64,9 +65,11 @@ fun HomeScreen(navController: NavHostController) {
             .background(lightPinkBg)
             .padding(32.dp)
     ) {
-
         Column(
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = 60.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -162,6 +165,7 @@ fun HomeScreen(navController: NavHostController) {
             }
             Spacer(modifier = Modifier.height(16.dp))
 
+
                 ElevatedButton( // cerrar sesion
                     onClick = {
                         navController.navigate("login") {
@@ -177,7 +181,9 @@ fun HomeScreen(navController: NavHostController) {
 
         Text(
             text = "¡Venus seguirá mejorando para ti!",
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 16.dp),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray,
             fontStyle = FontStyle.Italic

@@ -3,7 +3,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
-
+dependencies {
+    implementation("androidx.compose.material3:material3:1.2.1")
+}
 android {
     namespace = "com.example.venuslogin"
     compileSdk = 36
